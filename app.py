@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -35,7 +34,6 @@ movie_indices = pd.Series(
 
 
 def recommend_movies(title, num_recommendations=10):
-
     idx = movie_indices[title]
 
     similarity_scores = list(
@@ -56,9 +54,17 @@ def recommend_movies(title, num_recommendations=10):
         i[0] for i in similarity_scores
     ]
 
-    return movies.iloc[movie_indices_list][
-        ["title", "genres"]
+    scores = [
+        i[1] for i in similarity_scores
     ]
+
+    recommendations = movies.iloc[movie_indices_list][
+        ["title", "genres"]
+    ].copy()
+
+    recommendations["similarity"] = scores
+
+    return recommendations
 
 
 st.title("🎬 Movie Recommendation System")
@@ -83,7 +89,6 @@ num_recommendations = st.slider(
 )
 
 if st.button("✨ Recommend Movies"):
-
     recommendations = recommend_movies(
         selected_movie,
         num_recommendations
@@ -92,11 +97,9 @@ if st.button("✨ Recommend Movies"):
     st.subheader("🍿 Recommended Movies")
 
     for _, row in recommendations.iterrows():
-
         st.write(f"**{row['title']}**")
-
+        st.caption(f"Genres: {row['genres']}")
         st.caption(
-            f"Genres: {row['genres']}"
+            f"Similarity score: {row['similarity']:.2%}"
         )
-
         st.divider()
