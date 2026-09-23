@@ -1,0 +1,11 @@
+movieId,title,genres,predicted_rating
+912,Casablanca (1942),Drama|Romance|War,3.413970204590706
+2324,Life Is Beautiful (La Vita è bella) (1997),Comedy|Drama,3.3591517788388963
+296,Pulp Fiction (1994),Crime|Drama,3.322268371794574
+1270,Back to the Future (1985),Comedy|Sci-Fi,3.2901225500790083
+2762,"Sixth Sense, The (1999)",Thriller,3.2852905165565294
+457,"Fugitive, The (1993)",Action|Thriller,3.282539466863982
+2791,Airplane! (1980),Comedy,3.2652404960261308
+923,Citizen Kane (1941),Drama,3.2481378400318834
+1136,Monty Python and the Holy Grail (1974),Comedy,3.245289061358459
+920,Gone with the Wind (1939),Drama|Romance|War,3.236317922230999
