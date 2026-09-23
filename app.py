@@ -56,9 +56,17 @@ def recommend_movies(title, num_recommendations=10):
         i[0] for i in similarity_scores
     ]
 
-    return movies.iloc[movie_indices_list][
-        ["title", "genres"]
+    scores = [
+        i[1] for i in similarity_scores
     ]
+
+    recommendations = movies.iloc[movie_indices_list][
+        ["title", "genres"]
+    ].copy()
+
+    recommendations["similarity"] = scores
+
+    return recommendations
 
 
 st.title("🎬 Movie Recommendation System")
@@ -91,12 +99,8 @@ if st.button("✨ Recommend Movies"):
 
     st.subheader("🍿 Recommended Movies")
 
-    for _, row in recommendations.iterrows():
-
-        st.write(f"**{row['title']}**")
-
-        st.caption(
-            f"Genres: {row['genres']}"
-        )
-
-        st.divider()
+   for _, row in recommendations.iterrows():
+    st.write(f"**{row['title']}**")
+    st.caption(f"Genres: {row['genres']}")
+    st.caption(f"Similarity score: {row['similarity']:.2%}")
+    st.divider()
