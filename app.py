@@ -48,8 +48,26 @@ def recommend_movies(title, num_recommendations=10):
         reverse=True
     )
 
+    similarity_scores = [
+        (i, score)
+        for i, score in similarity_scores
+        if movies.iloc[i]["title"] != title
+    ]
+
     similarity_scores = similarity_scores[
-        1:num_recommendations + 1
+        :num_recommendations
+    ]
+
+    movie_indices_list = [
+        i[0] for i in similarity_scores
+    ]
+
+    return movies.iloc[movie_indices_list][
+        ["title", "genres"]
+    ]
+
+    similarity_scores = similarity_scores[
+        :num_recommendations
     ]
 
     movie_indices_list = [
