@@ -15,8 +15,7 @@ def load_data():
     movies = pd.read_csv("app_data/movies_app.csv")
 
     movies["genres_text"] = (
-    movies["title"] + " "
-    + movies["genres"].str.replace("|", " ", regex=False)
+    movies["genres"].str.replace("|", " ", regex=False)
 )
 
     tfidf = TfidfVectorizer()
