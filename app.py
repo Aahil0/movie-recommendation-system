@@ -14,9 +14,10 @@ st.set_page_config(
 def load_data():
     movies = pd.read_csv("app_data/movies_app.csv")
 
-    movies["genres_text"] = movies["genres"].str.replace(
-        "|", " ", regex=False
-    )
+    movies["genres_text"] = (
+    movies["title"] + " "
+    + movies["genres"].str.replace("|", " ", regex=False)
+)
 
     tfidf = TfidfVectorizer()
     tfidf_matrix = tfidf.fit_transform(movies["genres_text"])
