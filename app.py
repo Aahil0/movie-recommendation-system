@@ -64,26 +64,35 @@ def recommend_movies(title, num_recommendations=10):
 
 st.title("🎬 Movie Recommendation System")
 
-st.write(
-    "Discover movies similar to your favorites "
-    "using content-based filtering."
+st.markdown(
+    """
+    ### 🍿 Discover your next favorite movie
+    Find movies similar to the ones you love using
+    **content-based recommendation** powered by TF-IDF and cosine similarity.
+    """
 )
 
 st.divider()
 
+st.subheader("🎥 Choose a movie")
+
 selected_movie = st.selectbox(
-    "🎥 Select a movie",
+    "Select a movie you like",
     movies["title"].sort_values().tolist()
 )
 
 num_recommendations = st.slider(
-    "Number of recommendations",
+    "How many recommendations?",
     min_value=5,
     max_value=20,
     value=10
 )
 
-if st.button("✨ Recommend Movies"):
+if st.button(
+    "✨ Recommend Movies",
+    type="primary",
+    use_container_width=True
+):
 
     recommendations = recommend_movies(
         selected_movie,
@@ -92,12 +101,23 @@ if st.button("✨ Recommend Movies"):
 
     st.subheader("🍿 Recommended Movies")
 
-    for _, row in recommendations.iterrows():
+    for i, (_, row) in enumerate(recommendations.iterrows(), start=1):
 
-        st.write(f"**{row['title']}**")
+        with st.container(border=True):
 
-        st.caption(
-            f"Genres: {row['genres']}"
-        )
+            st.markdown(
+                f"### {i}. 🍿 {row['title']}"
+            )
 
-        st.divider()
+            st.caption(
+                f"🎭 Genres: {row['genres']}"
+            )
+
+st.divider()
+
+with st.expander("ℹ️ About this project"):
+    st.write(
+        "This movie recommendation system uses content-based filtering "
+        "with TF-IDF and cosine similarity. The project is built with "
+        "Python, Pandas, Scikit-learn, and Streamlit."
+    )
