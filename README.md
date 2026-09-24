@@ -2,6 +2,8 @@
 
 A machine learning-based movie recommendation system built using the MovieLens 1M dataset.
 
+**Try the application:** [Movie Recommendation System](https://movie-recommendation-system-uvth6veeegbjuu4kzv4c8k.streamlit.app/)
+
 ## Project Overview
 
 This project implements multiple recommendation techniques:
