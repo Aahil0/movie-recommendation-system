@@ -1,17 +1,13 @@
-# Python
 __pycache__/
 *.py[cod]
-
-# Jupyter
 .ipynb_checkpoints/
-
-# Data files
+.venv/
+.env
+.streamlit/secrets.toml
+.cache/
 *.zip
 *.dat
-
-# Environment
-.env
-
-# OS files
+data/ml-1m/
+ml-1m/
 .DS_Store
 Thumbs.db

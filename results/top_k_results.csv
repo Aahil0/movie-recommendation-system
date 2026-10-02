@@ -1,3 +1,22 @@
-Metric,Score
-Precision@10,0.1801
-Recall@10,0.1067
+Model,Metric,Score
+Movie mean,Precision@10,0.00004979
+Bias,Precision@10,0.05125311
+Legacy SVD,Precision@10,0.17860581
+Observed ALS,Precision@10,0.10368465
+Validated blend,Precision@10,0.18541079
+Popularity,Precision@10,0.14869710
+Bayesian quality,Precision@10,0.07868880
+Movie mean,Recall@10,0.00001713
+Bias,Recall@10,0.02893114
+Legacy SVD,Recall@10,0.10388685
+Observed ALS,Recall@10,0.05661956
+Validated blend,Recall@10,0.11158531
+Popularity,Recall@10,0.08540888
+Bayesian quality,Recall@10,0.04440364
+Movie mean,NDCG@10,0.00004044
+Bias,NDCG@10,0.05569767
+Legacy SVD,NDCG@10,0.21607756
+Observed ALS,NDCG@10,0.12317030
+Validated blend,NDCG@10,0.22475858
+Popularity,NDCG@10,0.17415530
+Bayesian quality,NDCG@10,0.09204324

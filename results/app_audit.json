@@ -1,0 +1,9 @@
+{
+  "queries": 3883,
+  "k": 10,
+  "self_count_or_duplicate_failures": [],
+  "unique_recommended_movies": 2576,
+  "catalog_coverage": 0.6634045840844708,
+  "human_relevance_status": "Not measured; template provided for blind human judgments.",
+  "metadata_coverage": 0.0
+}

@@ -1,7 +1,8 @@
-
-pandas
-numpy
-scikit-learn
-matplotlib
-requests
-streamlit
+numpy==2.5.3
+pandas==3.0.6
+scipy==1.18.1
+scikit-learn==1.7.2
+matplotlib==3.10.7
+requests==2.34.2
+streamlit==1.64.0
+threadpoolctl==3.7.0

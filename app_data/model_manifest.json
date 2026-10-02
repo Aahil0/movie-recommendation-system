@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "catalog_sha256": "55ce9d4128d8ebecbc8e4a3bf7f05df700d6f1afe30451ff3e50007206af8f00",
+  "training_scope": "All available ratings for serving; evaluation uses train-only artifacts",
+  "ratings": 1000209,
+  "users": 6040,
+  "neighbor_count": 40,
+  "min_co_likes": 3,
+  "support_shrinkage": 20,
+  "quality_prior_count": 50,
+  "training_ratings_sha256": "0f9356e48898945cbbfa539c1add250f3a897ab4d28a2b08914d207f400a499b",
+  "files": {
+    "movie_stats.csv": "7e3b1f578c4f81d5f95c822ebbf7f1308e7423660e1bfd9be2a3ae43c13f66ed",
+    "item_neighbors.json.gz": "be2b2ad04dcc40565f8460f9e35a77fd4bce8413f4498671aadd2c1afed09e83"
+  }
+}
