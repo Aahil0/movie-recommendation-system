@@ -79,62 +79,139 @@ def recommend_movies(title, num_recommendations=10):
     ]
 
 
-st.title("🎬 Movie Recommendation System")
+# Presentation only: the data loading and recommendation code above is unchanged.
+from html import escape
+import re
 
 st.markdown(
     """
-    ### 🍿 Discover your next favorite movie
-    Find movies similar to the ones you love using
-    **content-based recommendation** powered by TF-IDF and cosine similarity.
-    """
+    <style>
+    .block-container { max-width: 1160px; padding-top: 3rem; padding-bottom: 3rem; }
+    .film-brand { display: flex; justify-content: space-between; align-items: center;
+        padding-bottom: 1.2rem; border-bottom: 1px solid #e3ddd4; gap: 1rem; }
+    .film-wordmark { font-size: 1.1rem; font-weight: 750; letter-spacing: .16em; }
+    .film-note, .film-eyebrow { color: #716b65; font-size: .8rem; }
+    .film-eyebrow { text-transform: uppercase; letter-spacing: .12em; margin-bottom: .8rem; }
+    .film-hero { padding: 3.2rem 0 1.8rem; }
+    .film-hero h1 { font-family: Georgia, serif; font-weight: 400; font-size: clamp(2.6rem, 6vw, 4.6rem);
+        line-height: 1.08; letter-spacing: -.045em; margin: 0 0 1rem; max-width: 740px; }
+    .film-hero p { color: #716b65; font-size: 1.08rem; line-height: 1.65; max-width: 540px; }
+    .film-section { margin: 2.8rem 0 1.4rem; }
+    .film-section h2 { font-family: Georgia, serif; font-size: 1.9rem; font-weight: 400; margin: .35rem 0; }
+    .film-section p { color: #716b65; margin: .5rem 0; }
+    .film-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+    .film-card { background: #fff; border: 1px solid #e3ddd4; border-radius: 8px;
+        padding: 1.4rem; min-height: 225px; display: flex; flex-direction: column; }
+    .film-card-top { display: flex; justify-content: space-between; align-items: center;
+        color: #716b65; font-size: .78rem; margin-bottom: 1.3rem; }
+    .film-rank { color: #8b343b; font-weight: 650; letter-spacing: .08em; }
+    .film-card h3 { font-family: Georgia, serif; font-size: 1.35rem; font-weight: 400;
+        line-height: 1.35; margin: 0 0 .85rem; overflow-wrap: anywhere; }
+    .film-genres { display: flex; flex-wrap: wrap; gap: .35rem; margin-bottom: 1rem; }
+    .film-genre { font-size: .73rem; padding: .2rem .5rem; background: #f3efe9;
+        border-radius: 4px; color: #534c46; }
+    .film-reason { font-size: .8rem; line-height: 1.5; color: #716b65;
+        margin-top: auto; padding-top: .7rem; border-top: 1px solid #eee9e1; }
+    .film-empty { border-top: 1px solid #e3ddd4; margin-top: 2.5rem; padding: 2rem 0; }
+    .film-empty h2 { font-family: Georgia, serif; font-weight: 400; font-size: 1.6rem; }
+    .film-empty p { color: #716b65; max-width: 530px; line-height: 1.65; }
+    .film-footer { border-top: 1px solid #e3ddd4; margin: 3rem 0 1rem;
+        padding-top: 1rem; color: #716b65; font-size: .78rem; }
+    @media (max-width: 850px) { .film-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 540px) {
+        .block-container { padding-top: 1.5rem; }
+        .film-grid { grid-template-columns: 1fr; }
+        .film-hero { padding-top: 2rem; }
+        .film-note { max-width: 130px; text-align: right; }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
 )
 
-st.divider()
-
-st.subheader("🎥 Choose a movie")
-
-selected_movie = st.selectbox(
-    "Select a movie you like",
-    movies["title"].sort_values().tolist()
+st.markdown(
+    '<header class="film-brand"><span class="film-wordmark">FRAME</span>'
+    '<span class="film-note">A little direction for movie night.</span></header>'
+    '<section class="film-hero"><div class="film-eyebrow">Your next watch</div>'
+    '<h1>Good films lead to<br>more good films.</h1>'
+    '<p>Start with a film you love. Find something familiar, '
+    'something unexpected, and something worth watching.</p></section>',
+    unsafe_allow_html=True,
 )
 
-num_recommendations = st.slider(
-    "How many recommendations?",
-    min_value=5,
-    max_value=20,
-    value=10
-)
+with st.form("film_search", border=False):
+    selected_movie = st.selectbox(
+        "Start with a film you like",
+        movies["title"].sort_values().tolist(),
+        help="Type a title to search the collection.",
+    )
+    num_recommendations = st.slider(
+        "Number of films", min_value=5, max_value=20, value=10
+    )
+    submitted = st.form_submit_button("Find similar films", type="primary")
 
-if st.button(
-    "✨ Recommend Movies",
-    type="primary",
-    use_container_width=True
-):
+if submitted:
+    with st.spinner("Finding films with similar genres…"):
+        st.session_state["film_results"] = recommend_movies(
+            selected_movie, num_recommendations
+        )
+        st.session_state["film_source"] = selected_movie
 
-    recommendations = recommend_movies(
-        selected_movie,
-        num_recommendations
+if "film_results" in st.session_state:
+    source = st.session_state["film_source"]
+    recommendations = st.session_state["film_results"]
+    source_genres = set(
+        movies.loc[movies["title"] == source, "genres"].iloc[0].split("|")
+    )
+    st.markdown(
+        '<section class="film-section"><div class="film-eyebrow">The next chapter</div>'
+        f'<h2>Because you liked {escape(source)}</h2>'
+        f'<p>{len(recommendations)} films to explore, based on shared genres.</p></section>',
+        unsafe_allow_html=True,
+    )
+    cards = []
+    for rank, (_, row) in enumerate(recommendations.iterrows(), start=1):
+        title = str(row["title"])
+        title_parts = re.fullmatch(r"(.*)\s+\((\d{4})\)", title)
+        display_title = title_parts.group(1) if title_parts else title
+        year = title_parts.group(2) if title_parts else "Film"
+        genres = str(row["genres"]).split("|")
+        shared = [genre for genre in genres if genre in source_genres]
+        reason = (
+            "Shared genres: " + " · ".join(shared)
+            if shared else "Explore a different mix of genres."
+        )
+        tags = "".join(
+            f'<span class="film-genre">{escape(genre)}</span>' for genre in genres
+        )
+        cards.append(
+            '<article class="film-card">'
+            f'<div class="film-card-top"><span class="film-rank">{rank:02d}</span>'
+            f'<span>{escape(year)}</span></div>'
+            f'<h3>{escape(display_title)}</h3>'
+            f'<div class="film-genres">{tags}</div>'
+            f'<div class="film-reason">{escape(reason)}</div></article>'
+        )
+    st.markdown(
+        '<div class="film-grid">' + "".join(cards) + "</div>",
+        unsafe_allow_html=True,
+    )
+else:
+    st.markdown(
+        '<section class="film-empty"><div class="film-eyebrow">Where to begin</div>'
+        '<h2>One favorite is all it takes.</h2>'
+        '<p>Search for a film above, then choose how many recommendations you want. '
+        'Your next watch might be just around the corner.</p></section>',
+        unsafe_allow_html=True,
     )
 
-    st.subheader("🍿 Recommended Movies")
-
-    for i, (_, row) in enumerate(recommendations.iterrows(), start=1):
-
-        with st.container(border=True):
-
-            st.markdown(
-                f"### {i}. 🍿 {row['title']}"
-            )
-
-            st.caption(
-                f"🎭 Genres: {row['genres']}"
-            )
-
-st.divider()
-
-with st.expander("ℹ️ About this project"):
+st.markdown(
+    '<footer class="film-footer">FRAME · Built by Aahil · MovieLens collection</footer>',
+    unsafe_allow_html=True,
+)
+with st.expander("How these recommendations work"):
     st.write(
-        "This movie recommendation system uses content-based filtering "
-        "with TF-IDF and cosine similarity. The project is built with "
-        "Python, Pandas, Scikit-learn, and Streamlit."
+        "Films are matched using their genres through content-based filtering "
+        "with TF-IDF and cosine similarity. These suggestions reflect genre "
+        "similarity, rather than predicted ratings or personal viewing history."
     )
