@@ -1,3 +1,8 @@
 Model,RMSE
-Baseline,0.9799
-SVD,0.965
+Global mean,1.11808147
+User mean,1.03668168
+Movie mean,0.97996890
+Bias,0.90985530
+Legacy SVD,0.96499855
+Observed ALS,0.86313158
+Validated blend,0.96499855

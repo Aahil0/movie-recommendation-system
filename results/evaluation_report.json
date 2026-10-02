@@ -1,0 +1,391 @@
+{
+  "schema_version": 1,
+  "versions": {
+    "python": "3.12.14",
+    "numpy": "2.5.3",
+    "pandas": "3.0.6",
+    "sklearn": "1.7.2"
+  },
+  "protocols": [
+    {
+      "protocol": "per-user random",
+      "seed": 42,
+      "train_ratings": 797758,
+      "test_ratings": 202451,
+      "cold_user_ratings": 0,
+      "cold_movie_ratings": 35,
+      "ranking_users": 6025,
+      "test_users_without_relevant_movies": 15,
+      "candidate_policy": "Full catalog excluding only training-rated items",
+      "rating_policy": "All test ratings; explicit bias/global fallback for cold IDs",
+      "als": {
+        "factors": 24,
+        "epochs": 10,
+        "regularization": 15
+      },
+      "hyperparameter_policy": "Fixed before test evaluation; no test-set tuning",
+      "validated_ranker": {
+        "model": "Legacy SVD",
+        "weight": 0.75,
+        "validation_NDCG_at_10": 0.13502939689154217,
+        "validation_users": 1000,
+        "inner_train_ratings": 635723,
+        "inner_validation_ratings": 162035,
+        "split": {
+          "protocol": "per-user random",
+          "seed": 1042
+        },
+        "selection_objective": "Mean validation NDCG@10; outer test not used",
+        "all_choices": [
+          {
+            "model": "Legacy SVD",
+            "weight": 0,
+            "validation_NDCG_at_10": 0.1102706366248218
+          },
+          {
+            "model": "Legacy SVD",
+            "weight": 0.25,
+            "validation_NDCG_at_10": 0.12101773289336645
+          },
+          {
+            "model": "Legacy SVD",
+            "weight": 0.5,
+            "validation_NDCG_at_10": 0.12953433054113533
+          },
+          {
+            "model": "Legacy SVD",
+            "weight": 0.75,
+            "validation_NDCG_at_10": 0.13502939689154217
+          },
+          {
+            "model": "Legacy SVD",
+            "weight": 1,
+            "validation_NDCG_at_10": 0.12737334026390357
+          },
+          {
+            "model": "Observed ALS",
+            "weight": 0,
+            "validation_NDCG_at_10": 0.1102706366248218
+          },
+          {
+            "model": "Observed ALS",
+            "weight": 0.25,
+            "validation_NDCG_at_10": 0.12095343799996258
+          },
+          {
+            "model": "Observed ALS",
+            "weight": 0.5,
+            "validation_NDCG_at_10": 0.11414957888595019
+          },
+          {
+            "model": "Observed ALS",
+            "weight": 0.75,
+            "validation_NDCG_at_10": 0.10139557922897285
+          },
+          {
+            "model": "Observed ALS",
+            "weight": 1,
+            "validation_NDCG_at_10": 0.08115969425062128
+          }
+        ]
+      }
+    },
+    {
+      "protocol": "per-user random",
+      "seed": 7,
+      "train_ratings": 797758,
+      "test_ratings": 202451,
+      "cold_user_ratings": 0,
+      "cold_movie_ratings": 34,
+      "ranking_users": 6024,
+      "test_users_without_relevant_movies": 16,
+      "candidate_policy": "Full catalog excluding only training-rated items",
+      "rating_policy": "All test ratings; explicit bias/global fallback for cold IDs",
+      "als": {
+        "factors": 24,
+        "epochs": 10,
+        "regularization": 15
+      },
+      "hyperparameter_policy": "Fixed before test evaluation; no test-set tuning",
+      "validated_ranker": {
+        "model": "Legacy SVD",
+        "weight": 0.5,
+        "validation_NDCG_at_10": 0.1433147259739493,
+        "validation_users": 1000,
+        "inner_train_ratings": 635723,
+        "inner_validation_ratings": 162035,
+        "split": {
+          "protocol": "per-user random",
+          "seed": 1007
+        },
+        "selection_objective": "Mean validation NDCG@10; outer test not used",
+        "all_choices": [
+          {
+            "model": "Legacy SVD",
+            "weight": 0,
+            "validation_NDCG_at_10": 0.12465173214240544
+          },
+          {
+            "model": "Legacy SVD",
+            "weight": 0.25,
+            "validation_NDCG_at_10": 0.14075500630601737
+          },
+          {
+            "model": "Legacy SVD",
+            "weight": 0.5,
+            "validation_NDCG_at_10": 0.1433147259739493
+          },
+          {
+            "model": "Legacy SVD",
+            "weight": 0.75,
+            "validation_NDCG_at_10": 0.1363192572733266
+          },
+          {
+            "model": "Legacy SVD",
+            "weight": 1,
+            "validation_NDCG_at_10": 0.12554226212651487
+          },
+          {
+            "model": "Observed ALS",
+            "weight": 0,
+            "validation_NDCG_at_10": 0.12465173214240544
+          },
+          {
+            "model": "Observed ALS",
+            "weight": 0.25,
+            "validation_NDCG_at_10": 0.13341607815360237
+          },
+          {
+            "model": "Observed ALS",
+            "weight": 0.5,
+            "validation_NDCG_at_10": 0.12273708777032855
+          },
+          {
+            "model": "Observed ALS",
+            "weight": 0.75,
+            "validation_NDCG_at_10": 0.10835205837202733
+          },
+          {
+            "model": "Observed ALS",
+            "weight": 1,
+            "validation_NDCG_at_10": 0.08521113373091993
+          }
+        ]
+      }
+    },
+    {
+      "protocol": "per-user random",
+      "seed": 2026,
+      "train_ratings": 797758,
+      "test_ratings": 202451,
+      "cold_user_ratings": 0,
+      "cold_movie_ratings": 26,
+      "ranking_users": 6019,
+      "test_users_without_relevant_movies": 21,
+      "candidate_policy": "Full catalog excluding only training-rated items",
+      "rating_policy": "All test ratings; explicit bias/global fallback for cold IDs",
+      "als": {
+        "factors": 24,
+        "epochs": 10,
+        "regularization": 15
+      },
+      "hyperparameter_policy": "Fixed before test evaluation; no test-set tuning",
+      "validated_ranker": {
+        "model": "Legacy SVD",
+        "weight": 0.5,
+        "validation_NDCG_at_10": 0.1420068207943832,
+        "validation_users": 1000,
+        "inner_train_ratings": 635723,
+        "inner_validation_ratings": 162035,
+        "split": {
+          "protocol": "per-user random",
+          "seed": 3026
+        },
+        "selection_objective": "Mean validation NDCG@10; outer test not used",
+        "all_choices": [
+          {
+            "model": "Legacy SVD",
+            "weight": 0,
+            "validation_NDCG_at_10": 0.12064611064576707
+          },
+          {
+            "model": "Legacy SVD",
+            "weight": 0.25,
+            "validation_NDCG_at_10": 0.13630418628919758
+          },
+          {
+            "model": "Legacy SVD",
+            "weight": 0.5,
+            "validation_NDCG_at_10": 0.1420068207943832
+          },
+          {
+            "model": "Legacy SVD",
+            "weight": 0.75,
+            "validation_NDCG_at_10": 0.1392583628990974
+          },
+          {
+            "model": "Legacy SVD",
+            "weight": 1,
+            "validation_NDCG_at_10": 0.12919708760173837
+          },
+          {
+            "model": "Observed ALS",
+            "weight": 0,
+            "validation_NDCG_at_10": 0.12064611064576707
+          },
+          {
+            "model": "Observed ALS",
+            "weight": 0.25,
+            "validation_NDCG_at_10": 0.13581034899246844
+          },
+          {
+            "model": "Observed ALS",
+            "weight": 0.5,
+            "validation_NDCG_at_10": 0.1263420075293992
+          },
+          {
+            "model": "Observed ALS",
+            "weight": 0.75,
+            "validation_NDCG_at_10": 0.11200578597826258
+          },
+          {
+            "model": "Observed ALS",
+            "weight": 1,
+            "validation_NDCG_at_10": 0.08963836740549988
+          }
+        ]
+      }
+    },
+    {
+      "protocol": "strict global timestamp",
+      "cutoff": 975768738,
+      "train_ratings": 800168,
+      "test_ratings": 200041,
+      "cold_user_ratings": 95502,
+      "cold_movie_ratings": 115,
+      "ranking_users": 1762,
+      "test_users_without_relevant_movies": 21,
+      "candidate_policy": "Full catalog excluding only training-rated items",
+      "rating_policy": "All test ratings; explicit bias/global fallback for cold IDs",
+      "als": {
+        "factors": 24,
+        "epochs": 10,
+        "regularization": 15
+      },
+      "hyperparameter_policy": "Fixed before test evaluation; no test-set tuning",
+      "validated_ranker": {
+        "model": "Observed ALS",
+        "weight": 0.25,
+        "validation_NDCG_at_10": 0.3289064915173101,
+        "validation_users": 1000,
+        "inner_train_ratings": 640135,
+        "inner_validation_ratings": 160033,
+        "split": {
+          "protocol": "strict global timestamp",
+          "cutoff": 974737550
+        },
+        "selection_objective": "Mean validation NDCG@10; outer test not used",
+        "all_choices": [
+          {
+            "model": "Legacy SVD",
+            "weight": 0,
+            "validation_NDCG_at_10": 0.32226086572197343
+          },
+          {
+            "model": "Legacy SVD",
+            "weight": 0.25,
+            "validation_NDCG_at_10": 0.3275692844166988
+          },
+          {
+            "model": "Legacy SVD",
+            "weight": 0.5,
+            "validation_NDCG_at_10": 0.3268325096437909
+          },
+          {
+            "model": "Legacy SVD",
+            "weight": 0.75,
+            "validation_NDCG_at_10": 0.32587082571831766
+          },
+          {
+            "model": "Legacy SVD",
+            "weight": 1,
+            "validation_NDCG_at_10": 0.316097519419126
+          },
+          {
+            "model": "Observed ALS",
+            "weight": 0,
+            "validation_NDCG_at_10": 0.32226086572197343
+          },
+          {
+            "model": "Observed ALS",
+            "weight": 0.25,
+            "validation_NDCG_at_10": 0.3289064915173101
+          },
+          {
+            "model": "Observed ALS",
+            "weight": 0.5,
+            "validation_NDCG_at_10": 0.3260896024848091
+          },
+          {
+            "model": "Observed ALS",
+            "weight": 0.75,
+            "validation_NDCG_at_10": 0.3212253472624339
+          },
+          {
+            "model": "Observed ALS",
+            "weight": 1,
+            "validation_NDCG_at_10": 0.30735405750575856
+          }
+        ]
+      }
+    }
+  ],
+  "bootstrap": [
+    {
+      "protocol": "random",
+      "seed": 42,
+      "comparison": "Validated blend minus Popularity Precision@10",
+      "mean_difference": 0.03671369294605809,
+      "95pct_user_bootstrap": [
+        0.03334398340248963,
+        0.040000414937759333
+      ]
+    },
+    {
+      "protocol": "random",
+      "seed": 7,
+      "comparison": "Validated blend minus Popularity Precision@10",
+      "mean_difference": 0.03828021248339973,
+      "95pct_user_bootstrap": [
+        0.0353253652058433,
+        0.04115205843293492
+      ]
+    },
+    {
+      "protocol": "random",
+      "seed": 2026,
+      "comparison": "Validated blend minus Popularity Precision@10",
+      "mean_difference": 0.039823891011795974,
+      "95pct_user_bootstrap": [
+        0.03686534308024588,
+        0.042816082405715244
+      ]
+    },
+    {
+      "protocol": "temporal",
+      "seed": 42,
+      "comparison": "Validated blend minus Popularity Precision@10",
+      "mean_difference": 0.019125993189557322,
+      "95pct_user_bootstrap": [
+        0.015153234960272417,
+        0.02327043132803632
+      ]
+    }
+  ],
+  "limitations": [
+    "MovieLens is a historical catalog; no recent releases.",
+    "Unobserved ratings are not confirmed dislikes.",
+    "Movie similarity requires human judgments; user ranking metrics do not establish semantic similarity.",
+    "Fixed ALS defaults; ranking blend selected on an inner holdout, not the test."
+  ]
+}

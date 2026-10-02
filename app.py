@@ -1,85 +1,29 @@
-
-import streamlit as st
+from pathlib import Path
 import pandas as pd
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
+import streamlit as st
+from recommendation import RecommendationEngine
 
-st.set_page_config(
-    page_title="Movie Recommendation System",
-    page_icon="🎬",
-    layout="wide"
-)
-
-@st.cache_data
-def load_data():
-    movies = pd.read_csv("app_data/movies_app.csv")
-
-    movies["genres_text"] = (
-    movies["genres"].str.replace("|", " ", regex=False)
-)
-
-    tfidf = TfidfVectorizer()
-    tfidf_matrix = tfidf.fit_transform(movies["genres_text"])
-
-    similarity = cosine_similarity(tfidf_matrix)
-
-    return movies, similarity
+st.set_page_config(page_title="FRAME · Find your next film", page_icon="🎬", layout="wide")
+DATA_DIR = Path(__file__).resolve().parent / "app_data"
 
 
-movies, content_similarity = load_data()
-
-movie_indices = pd.Series(
-    movies.index,
-    index=movies["title"]
-).drop_duplicates()
-
-
-def recommend_movies(title, num_recommendations=10):
-
-    idx = movie_indices[title]
-
-    similarity_scores = list(
-        enumerate(content_similarity[idx])
-    )
-
-    similarity_scores = sorted(
-        similarity_scores,
-        key=lambda x: x[1],
-        reverse=True
-    )
-
-    similarity_scores = [
-        (i, score)
-        for i, score in similarity_scores
-        if movies.iloc[i]["title"] != title
-    ]
-
-    similarity_scores = similarity_scores[
-        :num_recommendations
-    ]
-
-    movie_indices_list = [
-        i[0] for i in similarity_scores
-    ]
-
-    return movies.iloc[movie_indices_list][
-        ["title", "genres"]
-    ]
-
-    similarity_scores = similarity_scores[
-        :num_recommendations
-    ]
-
-    movie_indices_list = [
-        i[0] for i in similarity_scores
-    ]
-
-    return movies.iloc[movie_indices_list][
-        ["title", "genres"]
-    ]
+@st.cache_resource
+def load_engine(artifact_stamp):
+    try:
+        return RecommendationEngine.from_directory(DATA_DIR), None
+    except (ValueError, OSError, KeyError):
+        return RecommendationEngine(pd.read_csv(DATA_DIR / "movies_app.csv")), (
+            "Viewer-based matches are temporarily unavailable. Showing genre matches."
+        )
 
 
-# Presentation only: the data loading and recommendation code above is unchanged.
+artifact_stamp = tuple((path.name, path.stat().st_mtime_ns, path.stat().st_size)
+                       for path in sorted(DATA_DIR.iterdir()) if path.is_file())
+engine, notice = load_engine(artifact_stamp)
+movies = engine.movies
+if notice:
+    st.warning(notice)
+
 from html import escape
 import re
 
@@ -148,25 +92,38 @@ with st.form("film_search", border=False):
     num_recommendations = st.slider(
         "Number of films", min_value=5, max_value=20, value=10
     )
-    submitted = st.form_submit_button("Find similar films", type="primary")
+    discovery_mode = st.selectbox(
+        "What would you like to explore?",
+        ["Similar films", "Genre matches"],
+        help="Similar films combines shared genres with MovieLens viewer-rating patterns.",
+    )
+    submitted = st.form_submit_button("Find films", type="primary")
 
 if submitted:
     with st.spinner("Finding films with similar genres…"):
-        st.session_state["film_results"] = recommend_movies(
-            selected_movie, num_recommendations
-        )
-        st.session_state["film_source"] = selected_movie
+        try:
+            st.session_state["film_results"] = engine.recommend(
+                engine.find_movie_id(selected_movie),
+                num_recommendations,
+                mode="hybrid" if discovery_mode == "Similar films" else "genres",
+            )
+            st.session_state["film_source"] = selected_movie
+            st.session_state["film_mode"] = discovery_mode
+        except ValueError:
+            st.error("That film could not be matched. Please select another title.")
 
 if "film_results" in st.session_state:
     source = st.session_state["film_source"]
     recommendations = st.session_state["film_results"]
-    source_genres = set(
-        movies.loc[movies["title"] == source, "genres"].iloc[0].split("|")
+    based_on = (
+        "shared genres and viewer-rating patterns"
+        if st.session_state.get("film_mode") == "Similar films" and engine.neighbors
+        else "shared genres"
     )
     st.markdown(
         '<section class="film-section"><div class="film-eyebrow">The next chapter</div>'
         f'<h2>Because you liked {escape(source)}</h2>'
-        f'<p>{len(recommendations)} films to explore, based on shared genres.</p></section>',
+        f'<p>{len(recommendations)} films to explore, based on {based_on}.</p></section>',
         unsafe_allow_html=True,
     )
     cards = []
@@ -176,10 +133,10 @@ if "film_results" in st.session_state:
         display_title = title_parts.group(1) if title_parts else title
         year = title_parts.group(2) if title_parts else "Film"
         genres = str(row["genres"]).split("|")
-        shared = [genre for genre in genres if genre in source_genres]
-        reason = (
-            "Shared genres: " + " · ".join(shared)
-            if shared else "Explore a different mix of genres."
+        reason = str(row["reason"])
+        rating_note = (
+            f'{row["avg_rating"]:.1f}/5 · {int(row["rating_count"]):,} MovieLens ratings'
+            if row["rating_count"] else "Discover this film"
         )
         tags = "".join(
             f'<span class="film-genre">{escape(genre)}</span>' for genre in genres
@@ -190,7 +147,7 @@ if "film_results" in st.session_state:
             f'<span>{escape(year)}</span></div>'
             f'<h3>{escape(display_title)}</h3>'
             f'<div class="film-genres">{tags}</div>'
-            f'<div class="film-reason">{escape(reason)}</div></article>'
+            f'<div class="film-reason">{escape(reason)}<br>{escape(rating_note)}</div></article>'
         )
     st.markdown(
         '<div class="film-grid">' + "".join(cards) + "</div>",
@@ -211,7 +168,16 @@ st.markdown(
 )
 with st.expander("How these recommendations work"):
     st.write(
-        "Films are matched using their genres through content-based filtering "
-        "with TF-IDF and cosine similarity. These suggestions reflect genre "
-        "similarity, rather than predicted ratings or personal viewing history."
+        "Similar films combines shared genres with patterns in movies that "
+        "MovieLens viewers liked, plus a small rating-quality signal. Genre matches "
+        "uses shared genres with a rating-quality tie-breaker. Results are balanced to reduce repetition. "
+        "The collection covers films released through 2000. This is film-to-film "
+        "discovery, rather than a prediction of your personal rating."
     )
+    if engine.features.has_details.any():
+        st.caption("Available story, cast, director and keyword metadata also informs content comparisons.")
+    else:
+        st.caption(
+            "Story and cast metadata is not available in this collection; matches use genres and viewer ratings."
+        )
+
